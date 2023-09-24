@@ -1,0 +1,31 @@
+/* App.css */
+
+/* Add responsive styles for the DataTable and dialog components */
+@media (max-width: 960px) {
+    .datatable-crud-demo {
+      padding: 1rem;
+    }
+  
+    .product-image {
+      width: 100%;
+    }
+  
+    .product-details {
+      width: 100%;
+    }
+  
+    .product-details .field {
+      margin-bottom: 1rem;
+    }
+  
+    .product-details .field.col {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .datatable-crud-demo {
+      padding: 0.5rem;
+    }
+  }
+  

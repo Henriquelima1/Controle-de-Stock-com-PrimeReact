@@ -3,6 +3,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Rating } from 'primereact/rating';
 import { Button } from 'primereact/button';
+import { Calendar } from 'primereact/calendar';
 
 function ProductTable({ products, selectedProducts, editProduct, confirmDeleteProduct, dt , exportCSV, onSelectionChange, globalFilter, header}) {
     const formatCurrency = (value) => {
@@ -22,6 +23,10 @@ function ProductTable({ products, selectedProducts, editProduct, confirmDeletePr
 
     const priceBodyTemplate = (rowData) => {
         return formatCurrencyBRL(rowData.price);
+    }
+
+    const dateBodyTemplate = (rowData) => {
+        return rowData.date;
     }
 
     const ratingBodyTemplate = (rowData) => {
@@ -52,7 +57,9 @@ function ProductTable({ products, selectedProducts, editProduct, confirmDeletePr
             <Column field="name" header="Name" sortable style={{ minWidth: '16rem' }}></Column>
             <Column field="image" header="Image" body={imageBodyTemplate}></Column>
             <Column field="price" header="Price" body={priceBodyTemplate} sortable style={{ minWidth: '8rem' }}></Column>
+            <Column field="date" header="Date" body={dateBodyTemplate} sortable style={{minWidth: '12rem'}}></Column>
             <Column field="category" header="Category" sortable style={{ minWidth: '10rem' }}></Column>
+            
             <Column field="rating" header="Reviews" body={ratingBodyTemplate} sortable style={{ minWidth: '12rem' }}></Column>
             <Column field="inventoryStatus" header="Status" body={statusBodyTemplate} sortable style={{ minWidth: '12rem' }}></Column>
             <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>

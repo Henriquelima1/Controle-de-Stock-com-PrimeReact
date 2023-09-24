@@ -5,8 +5,12 @@ import { InputNumber } from 'primereact/inputnumber';
 import { RadioButton } from 'primereact/radiobutton';
 import { classNames } from 'primereact/utils';
 import { InputTextarea } from 'primereact/inputtextarea';
+import { Calendar } from 'primereact/calendar';
 
-function ProductForm({ product, productDialog, hideDialog, saveProduct, onInputChange, onInputNumberChange, onCategoryChange, productDialogFooter, submitted}) {
+
+function ProductForm({ product, productDialog, hideDialog, saveProduct, onInputChange, onInputNumberChange, onCategoryChange, productDialogFooter, submitted, onSelectedDate}) {
+
+
     return(
         <Dialog visible={productDialog} breakpoints={{'960px': '75vw', '640px': '100vw'}} style={{width: '40vw'}} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
             {product.image && <img src={`demo/images/product/${product.image}`} onError={(e) => e.target.src='https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'} alt={product.image} className="block mt-0 mx-auto mb-5 w-20rem shadow-2" />}
@@ -41,7 +45,10 @@ function ProductForm({ product, productDialog, hideDialog, saveProduct, onInputC
                     </div>
                 </div>
             </div>
-
+            <div className='formData'>
+                <label htmlFor="date">Date</label>
+                <Calendar id="date" value={product.date} onChange={(e) => onSelectedDate(e, 'date')} showIcon={true} />
+            </div>
             <div className="formgrid grid">
                 <div className="field col">
                     <label htmlFor="price">Price</label>

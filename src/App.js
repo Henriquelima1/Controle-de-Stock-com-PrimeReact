@@ -15,6 +15,7 @@ import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import ProductTable from './components/ProductTable';
 import ProductForm from './components/ProductForm';
+import { Calendar } from 'primereact/calendar';
 
 function App() {
     let emptyProduct = {
@@ -26,7 +27,8 @@ function App() {
         price: 0,
         quantity: 0,
         rating: 0,
-        inventoryStatus: 'INSTOCK'
+        inventoryStatus: 'INSTOCK',
+        date: null
     };
 
     const [products, setProducts] = useState(null);
@@ -163,10 +165,24 @@ function App() {
         const val = e.value || 0;
         let _product = {...product};
         _product[`${name}`] = val;
-
+        
         setProduct(_product);
     }
 
+    const onSelectedDate = (e, name) => {
+        let val = (e.target && e.target.value) || '12/13/2024';
+
+        
+        const dia = val.getDate();
+        const mes = val.getMonth() + 1;
+        const ano = val.getFullYear();
+        val = `${dia}/${mes}/${ano}`;
+
+        let _product = {...product};
+        _product[`${name}`] = val;
+
+        setProduct(_product);
+    }
     
 
     const header = (
@@ -211,7 +227,7 @@ function App() {
 
             <ProductTable products={products} selectedProducts={selectedProducts} editProduct={editProduct} confirmDeleteProduct={confirmDeleteProduct} dt={dt} exportCSV={exportCSV} onSelectionChange={(e) => setSelectedProducts(e.value)} globalFilter={globalFilter} header={header}/>
 
-            <ProductForm product={product} productDialog={productDialog} hideDialog={hideDialog} saveProduct={saveProduct} onInputChange={onInputChange} onInputNumberChange={onInputNumberChange} onCategoryChange={onCategoryChange} productDialogFooter={productDialogFooter} submitted={submitted}/>
+            <ProductForm product={product} productDialog={productDialog} hideDialog={hideDialog} saveProduct={saveProduct} onInputChange={onInputChange} onInputNumberChange={onInputNumberChange} onCategoryChange={onCategoryChange} productDialogFooter={productDialogFooter} submitted={submitted} onSelectedDate={onSelectedDate}/>
 
             <Dialog visible={deleteProductDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
                 <div className="flex align-items-center justify-content-center">
