@@ -16,6 +16,7 @@ import 'primeflex/primeflex.css';
 import ProductTable from './components/ProductTable';
 import ProductForm from './components/ProductForm';
 import { Calendar } from 'primereact/calendar';
+import axios from 'axios';
 
 function App() {
     let emptyProduct = {
@@ -31,6 +32,30 @@ function App() {
         date: null
     };
 
+    const login = async (username, password) => {
+        try {
+            const response = await axios.post('http://localhost:8080/api/auth/login', {
+                username: username,
+                password: password
+            });
+            
+            const token = response.data.token;
+            localStorage.setItem('token', token); // Armazena o token no localStorage
+            
+            // Lógica para redirecionar o usuário ou realizar outras ações após o login
+        } catch (error) {
+            console.error('Erro de login:', error);
+        }
+    };
+
+    const api = axios.create({
+        baseURL: 'http://localhost:8080/api',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    });
+
     const [products, setProducts] = useState(null);
     const [productDialog, setProductDialog] = useState(false);
     const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -43,7 +68,7 @@ function App() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getProducts().then(data => setProducts(data));
+        getProducts().then(data => setProducts(data)).catch(error => console.error('Erro ao obter dados:', error));
     }, []);
 
     const exportCSV = () => {
