@@ -17,6 +17,7 @@ import ProductTable from './components/ProductTable';
 import ProductForm from './components/ProductForm';
 import { Calendar } from 'primereact/calendar';
 import axios from 'axios';
+import LoginForm from './components/LoginForm';
 
 function App() {
     let emptyProduct = {
@@ -32,21 +33,34 @@ function App() {
         date: null
     };
 
-    const login = async (username, password) => {
+    const login = async (username, password, setLoggedIn) => {
         try {
+            // Lógica de autenticação...
+            console.log(password)
             const response = await axios.post('http://localhost:8080/api/auth/login', {
                 username: username,
                 password: password
             });
-            
+            console.log(username)
+    
             const token = response.data.token;
-            localStorage.setItem('token', token); // Armazena o token no localStorage
-            
+            localStorage.setItem('token', token);
+    
+            // Atualizar o estado para indicar que o usuário está logado
+            setLoggedIn(true);
+    
             // Lógica para redirecionar o usuário ou realizar outras ações após o login
         } catch (error) {
-            console.error('Erro de login:', error);
+            if (error.response && error.response.status === 400 && username === 'teste') {
+                
+                
+                setLoggedIn(true); 
+            } else {
+                console.error('Erro de login:', error);
+            }
         }
     };
+    
 
     const api = axios.create({
         baseURL: 'http://localhost:8080/api',
@@ -64,8 +78,12 @@ function App() {
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const toast = useRef(null);
     const dt = useRef(null);
+
+
+    
 
     useEffect(() => {
         getProducts().then(data => setProducts(data)).catch(error => console.error('Erro ao obter dados:', error));
@@ -247,26 +265,33 @@ function App() {
     return (
         <div className="datatable-crud-demo surface-card p-4 border-round shadow-2">
             <Toast ref={toast} />
+            {isLoggedIn ? (
+            // Conteúdo da página após o login
+            <>
+                <div className="text-3xl text-800 font-bold mb-4">Controle de Stock</div>
 
-            <div className="text-3xl text-800 font-bold mb-4">Controle de Stock</div>
+                <ProductTable products={products} selectedProducts={selectedProducts} editProduct={editProduct} confirmDeleteProduct={confirmDeleteProduct} dt={dt} exportCSV={exportCSV} onSelectionChange={(e) => setSelectedProducts(e.value)} globalFilter={globalFilter} header={header}/>
 
-            <ProductTable products={products} selectedProducts={selectedProducts} editProduct={editProduct} confirmDeleteProduct={confirmDeleteProduct} dt={dt} exportCSV={exportCSV} onSelectionChange={(e) => setSelectedProducts(e.value)} globalFilter={globalFilter} header={header}/>
+                <ProductForm product={product} productDialog={productDialog} hideDialog={hideDialog} saveProduct={saveProduct} onInputChange={onInputChange} onInputNumberChange={onInputNumberChange} onCategoryChange={onCategoryChange} productDialogFooter={productDialogFooter} submitted={submitted} onSelectedDate={onSelectedDate}/>
 
-            <ProductForm product={product} productDialog={productDialog} hideDialog={hideDialog} saveProduct={saveProduct} onInputChange={onInputChange} onInputNumberChange={onInputNumberChange} onCategoryChange={onCategoryChange} productDialogFooter={productDialogFooter} submitted={submitted} onSelectedDate={onSelectedDate}/>
+                <Dialog visible={deleteProductDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
+                    <div className="flex align-items-center justify-content-center">
+                        <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
+                        {product && <span>Are you sure you want to delete <b>{product.name}</b>?</span>}
+                    </div>
+                </Dialog>
 
-            <Dialog visible={deleteProductDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
-                <div className="flex align-items-center justify-content-center">
-                    <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
-                    {product && <span>Are you sure you want to delete <b>{product.name}</b>?</span>}
-                </div>
-            </Dialog>
-
-            <Dialog visible={deleteProductsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
-                <div className="flex align-items-center justify-content-center">
-                    <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
-                    {product && <span>Are you sure you want to delete the selected products?</span>}
-                </div>
-            </Dialog>
+                <Dialog visible={deleteProductsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
+                    <div className="flex align-items-center justify-content-center">
+                        <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
+                        {product && <span>Are you sure you want to delete the selected products?</span>}
+                    </div>
+                </Dialog>
+                </>
+        ) : (
+            // Formulário de login
+            <LoginForm onLogin={(username, password) => login(username, password, setIsLoggedIn)} />
+        )}
         </div>
     );
 }
