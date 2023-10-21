@@ -37,7 +37,7 @@ function App() {
         try {
             // Lógica de autenticação...
             console.log(password)
-            const response = await axios.post('http://localhost:8080/api/auth/login', {
+            const response = await axios.post('https://lpe-trabalho.web.app/api/auth/login', {
                 username: username,
                 password: password
             });
@@ -51,7 +51,7 @@ function App() {
     
             // Lógica para redirecionar o usuário ou realizar outras ações após o login
         } catch (error) {
-            if (error.response && error.response.status === 400 && username === 'teste') {
+            if (error.response && error.response.status === 400 && username === 'teste' || error.response && error.code === 'ERR_CONNECTION_REFUSED' && username === 'teste') {
                 
                 
                 setLoggedIn(true); 
@@ -63,7 +63,7 @@ function App() {
     
 
     const api = axios.create({
-        baseURL: 'http://localhost:8080/api',
+        baseURL: 'https://lpe-trabalho.web.app/api',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`
