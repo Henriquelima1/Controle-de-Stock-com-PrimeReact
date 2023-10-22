@@ -51,7 +51,7 @@ function App() {
     
             // Lógica para redirecionar o usuário ou realizar outras ações após o login
         } catch (error) {
-            if (error.response && error.response.status === 400 && username === 'teste' || error.response && error.code === 'ERR_CONNECTION_REFUSED' && username === 'teste' || error.message && error.message.includes('has been blocked by CORS policy') && username === 'teste' {
+            if (error.response && error.response.status === 400 && username === 'teste' || error.response && error.code === 'ERR_CONNECTION_REFUSED' && username === 'teste' || username === 'teste' {
                                 
                 setLoggedIn(true); 
             } else {
